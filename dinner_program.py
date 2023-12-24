@@ -120,7 +120,19 @@ if __name__ == "__main__":
 			get_dinner_inspo()
 			option = 0
 		elif option == 2:
-			look_up_recipe()
+			i = 3
+			while i > 0:
+				has_idea = input("\nHave a specific recipe in mind? y/n\n").lower()
+				if has_idea == "y":
+					dinner_idea = input("What do you have in mind?").lower()
+					look_up_recipe(dinner_idea)
+					i = 0
+				elif has_idea == "n":
+					ingredient_idea = input("What kind of food are you in the mood for?").lower()
+					look_up_recipe(ingredient_idea, False)
+					i = 0
+				else:
+					i -= 1
 			option = 0
 		elif option == 3:
 			add_recipe()
