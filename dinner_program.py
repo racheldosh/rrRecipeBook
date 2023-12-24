@@ -2,6 +2,7 @@ import csv
 import random
 
 recipes = dict()
+ingredients = set()
 
 def process_recipes():
 	with open('recipes.csv') as recipe_file:
@@ -20,7 +21,7 @@ def process_recipes():
 				ingredients_list = row[2]
 				recipes["ingredients"].append([])
 				for ingredient in ingredients_list.split(','):
-					recipes["ingredients"][i - 1].append(ingredient)
+					recipes["ingredients"][i - 1].append(ingredient.lower())
 
 				recipes["is_main_dish"].append(row[3])
 
@@ -32,6 +33,10 @@ def process_recipes():
 						recipes["recommended_side_dishes"][i - 1].append(side_dish)
 				else:
 					recipes["recommended_side_dishes"].append("")
+	for single_recipe_ingredients in recipes["ingredients"]:
+		for ingredient in single_recipe_ingredients:
+			if ingredient not in ingredients:
+				ingredients.add(ingredient)
 
 def print_ingredients(recipe_index):
 	print("\nIngredients List:")
@@ -45,9 +50,15 @@ def print_random_recipe():
 	print(recipes["description"][random_int].capitalize())
 	return(random_int)
 
+def print_all_ingredients():
+	print()
+	sorted_ingredients = sorted(list(ingredients))
+	for ingredient in sorted_ingredients:
+		print(ingredient.capitalize())
+
 def get_dinner_inspo():
-	ingredient_ideas = input("Is there anything you're in the mood for? (o for options) \n").lower()
-	if ingredient_ideas == "" or ingredient_ideas == "no" or ingredient_ideas == "n":
+	ingredient_idea = input("Is there anything you're in the mood for? (o for options) \n").lower()
+	if ingredient_idea == "" or ingredient_idea == "no" or ingredient_idea == "n":
 		print("I see you don't have any ideas for dinner. No worries! I'll randomize all recipe ideas for you. How does this sound? \n")
 		done = "m"
 		while done != "q" and done != "i":
@@ -61,12 +72,34 @@ def get_dinner_inspo():
 				print("I see you didn't like that one. I'll choose another. How does this sound? \n")
 		if done == "i":
 			print_ingredients(recipe_index)
-	# if ingredient_ideas = "o" display a list of all ingredients, alphabetized
-    # else search for ingredient and display list of titles including that ingredient
+	if ingredient_idea == "o":
+		print_all_ingredients()
+		ingredient_idea = input("\nDo any of the above sound good today?\n").lower()
+	if len(ingredient_idea) > 3 and any(ingredient_idea in s for s in ingredients):
+		look_up_recipe(ingredient_idea, False)
 
-def look_up_recipe():
-	print("TODO")
-	# probably need to do some sort of soft title search for recipe or display list of recipes, then print recipe
+	print("\nEnjoy dinner, whatever it may be!\n")
+
+def look_up_recipe(idea, is_main_dish = True):
+	if is_main_dish:
+		# look up by main dish name
+		print("TODO")
+	else:
+		# look up by ingredient names, for example print recipe title for any recipe that contains ingredient
+		dinner_options = set()
+		for i in range(len(recipes["ingredients"])):
+			ingredient_list = recipes["ingredients"][i]
+			if idea in ingredient_list:
+				dinner_options.add(recipes["title"][i])
+		for each_dinner_idea in sorted(list(dinner_options)):
+			print(each_dinner_idea)
+		dinner_choice = input("\nDo any of the above recipes sound good?\n").lower()
+		if dinner_choice is "yes" or dinner_choice is "y":
+			dinner_choice = input("\nWhat sounds good?\n")
+		if len(dinner_choice) > 3:
+			print("got here!! should recurse and print TODO")
+			look_up_recipe(dinner_choice)
+
 
 def add_recipe():
 	print("TODO")
