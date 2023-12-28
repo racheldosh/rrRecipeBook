@@ -83,21 +83,28 @@ def get_dinner_inspo():
 def look_up_recipe(idea, is_main_dish = True):
 	if is_main_dish:
 		# look up by main dish name
-		print("TODO")
+		for i in range(len(recipes["title"])):
+			if idea == recipes["title"][i]:
+				print(recipes["title"][i])
+				print(recipes["description"][i])
+				print("\nIngredient list:\n")
+				for ingredient in recipes["ingredients"][i]:
+					print(ingredient.capitalize())
+				print()
 	else:
 		# look up by ingredient names, for example print recipe title for any recipe that contains ingredient
 		dinner_options = set()
 		for i in range(len(recipes["ingredients"])):
 			ingredient_list = recipes["ingredients"][i]
-			if idea in ingredient_list:
-				dinner_options.add(recipes["title"][i])
+			for ing in ingredient_list:
+				if idea in ing:
+					dinner_options.add(recipes["title"][i])
 		for each_dinner_idea in sorted(list(dinner_options)):
 			print(each_dinner_idea)
 		dinner_choice = input("\nDo any of the above recipes sound good?\n").lower()
 		if dinner_choice is "yes" or dinner_choice is "y":
 			dinner_choice = input("\nWhat sounds good?\n")
 		if len(dinner_choice) > 3:
-			print("got here!! should recurse and print TODO")
 			look_up_recipe(dinner_choice)
 
 
